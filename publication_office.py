@@ -12,7 +12,7 @@ def publication_office(wikibase_repo, filepath: str, edit_limit: int = 0):
         if nedit < edit_limit or edit_limit <= 0:
             if not pd.isna(row['wikidata']) and row['confidence'] > 0.3:
                 wid = row['wikidata'].replace('http://www.wikidata.org/entity/', '')
-                print(_, row['publication'], row['wikidata'], row['confidence'], wid)
+                # print(_, row['publication'], row['wikidata'], row['confidence'], wid)
                 item = pywikibot.ItemPage(wikibase_repo, wid)
                 try:
                     item.get()
@@ -33,7 +33,7 @@ def publication_office(wikibase_repo, filepath: str, edit_limit: int = 0):
                         data={'claims': [claim.toJSON()]},
                         summary='Adding exact Match to entity form the publication office of the European Union'
                     )
-                    print('DO EDITION')
+                    print(f'Adding {row["publication"]} to {row["wikidata"]}')
 
 
 if __name__ == '__main__':
