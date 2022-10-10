@@ -24,6 +24,7 @@ def remove_duplicate(wikibase_repo, edit_limit: int = 0):
     sparql = SPARQLWrapper('https://query.wikidata.org/sparql')
     res = sparql_query(sparql, query)['results']['bindings']
     nedit = 0
+    total = 0
     for r in res:
         if nedit < edit_limit or edit_limit <= 0:
             qid = r['s']['value'].replace('http://www.wikidata.org/entity/', '')
@@ -40,15 +41,16 @@ def remove_duplicate(wikibase_repo, edit_limit: int = 0):
                         claims_to_remove.append(claim)
 
             if len(claims_to_remove) > 0:
-                print(f'http://www.wikidata.org/entity/{qid}', 'removing', len(claims_to_remove), 'claims.')
+                print(total, f'http://www.wikidata.org/entity/{qid}', 'removing', len(claims_to_remove), 'claims.')
                 wikidata_item.removeClaims(claims_to_remove, summary='Removing duplicate')
                 nedit += 1
             else:
-                print(f'http://www.wikidata.org/entity/{qid}', 'has no duplicate')
+                print(total, f'http://www.wikidata.org/entity/{qid}', 'has no duplicate')
+        total += 1
 
 
 if __name__ == '__main__':
     wikibase = pywikibot.Site('wikidata', 'wikidata')
     wikibase_repo = wikibase.data_repository()
     wikibase_repo.login()
-    remove_duplicate(wikibase_repo, 3)
+    remove_duplicate(wikibase_repo)
